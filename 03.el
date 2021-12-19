@@ -1,0 +1,147 @@
+; https://adventofcode.com/2021/day/3
+
+(defun make-state (pos counts)
+  `((pos . ,pos)
+    (counts . ,counts)))
+
+(defun count-occurrences (acc cur)
+  (let* ((p (alist-get 'pos acc))
+         (c (alist-get 'counts acc))
+         (i (string-to-number cur))
+         (v (plist-get c p))
+         (n (plist-put v i (+ 1 (or (plist-get v i) 0)))))
+    (make-state (+ 1 p) (plist-put c p n))))
+
+(defun calculate (acc cur)
+  (defun results ()
+    (let ((chars (string-to-list cur))
+          (state (make-state 0 acc)))
+      (reduce
+       'count-occurrences chars
+       :key 'char-to-string
+       :initial-value state)))
+  (alist-get 'counts (results)))
+
+(defun plist-to-alist (pl)
+  (defun build-alist (cur acc)
+    (let* ((b (car acc))
+           (r (cdr acc))
+           (n `(,cur . ,b)))
+      (if (eq b nil)
+          `(,cur . ,r)
+        `(nil . ,(cons n r)))))
+  (cdr (reduce 'build-alist pl :initial-value '() :from-end t)))
+
+(defun most-common (counts)
+  (let* ((c (cdr counts))
+        (z (or (plist-get c 0) 0))
+        (o (or (plist-get c 1) 0)))
+    (if (> z o) "0" "1")))
+
+(defun least-common (counts)
+  (let* ((c (cdr counts))
+        (z (or (plist-get c 0) 0))
+        (o (or (plist-get c 1) 0)))
+    (if (< z o) "0" "1")))
+
+(defun compare-common-bits (fn vals)
+  (string-to-number (string-join (mapcar fn vals)) 2))
+
+(defun mcb (rates)
+  (compare-common-bits 'most-common rates))
+
+(defun lcb (rates)
+  (compare-common-bits 'least-common rates))
+
+(defun power-consumption (binary-list)
+  (print binary-list)
+  (defun rates ()
+    (reduce 'calculate binary-list :initial-value '()))
+  (let* ((r (plist-to-alist (rates)))
+         (g (mcb r))
+         (e (lcb r)))
+    (* g e)))
+
+(defun nth-of-string (str idx)
+  (char-to-string (nth idx (string-to-list str))))
+
+(defun calculate-ogr (acc cur)
+  (print acc)
+  (print cur)
+  (let* ((p (car cur))
+         (c (cdr cur))
+         (v (most-common c)))
+    (print p)
+    (print c)
+    (print v)
+    (defun filter-binary-strings (a cu)
+      (let ((val (nth-of-string cu p)))
+        (if (string-equal val v)
+            (cons cu a)
+          a)))
+    (if (= 1 (length acc))
+        acc
+      (reduce 'filter-binary-strings acc :initial-value '()))))
+
+(defun calculate-csr (acc cur)
+  (let* ((p (car cur))
+         (c (cdr cur))
+         (v (least-common c)))
+    (defun filter-binary-strings (a cu)
+      (let ((val (nth-of-string cu p)))
+        (if (string-equal val v)
+            (cons cu a)
+          a)))
+    (if (= 1 (length acc))
+        acc
+      (reduce 'filter-binary-strings acc :initial-value '()))))
+
+(defun life-support-rating (binary-list)
+  (print binary-list)
+  (defun oxygen-generator-rating (rates)
+    (print rates)
+    (string-to-number
+     (car (reduce 'calculate-ogr rates :initial-value binary-list))
+     2))
+  (defun c02-scrubber-rating (rates)
+    (string-to-number
+     (car (reduce 'calculate-csr rates :initial-value binary-list))
+     2))
+  (defun rates (lst)
+    (reduce 'calculate lst :initial-value '()))
+  (defun filter-binary-strings (a cu)
+    (let ((val (nth-of-string cu p)))
+      (if (string-equal val v)
+          (cons cu a)
+        a)))
+  (defun inner (idx lst)
+    (let* ((r (plist-to-alist (rates)))
+           (o (oxygen-generator-rating r))
+           (c (c02-scrubber-rating r)))))
+  (inner 0 binary-list)
+  (let* ((r (plist-to-alist (rates)))
+         (o (oxygen-generator-rating r))
+         (c (c02-scrubber-rating r)))
+    (print r)
+    (print o)
+    (print c)
+    (* o c)))
+
+(defun read-lines (path)
+  (with-temp-buffer
+    (insert-file-contents path)
+    (split-string (buffer-string) "\n" t)))
+
+(ert-deftest 03-power-consumption-test-data ()
+  (let* ((lines (read-lines "./03.test.txt")))
+    (should (= (power-consumption lines) 198))))
+
+(ert-deftest 03-power-consumption-input-data ()
+  (let* ((lines (read-lines "./03.input.txt")))
+    (should (= (power-consumption lines) 4006064))))
+
+(ert-deftest 03-life-support-rating-test-data ()
+  (let* ((lines (read-lines "./03.test.txt")))
+    (should (= (life-support-rating lines) 230))))
+
+(ert "03")
