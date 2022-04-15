@@ -68,8 +68,41 @@
   (cl-loop with graph = (make-hash-table :test 'equal)
            for y from 0 to (- (length points) 1)
            do (cl-loop for x from 0 to (- (length (nth 0 points)) 1)
-                    do (add-edges x y points graph))
+                       do (add-edges x y points graph))
            finally return graph))
+
+(defun inc-val (val n)
+  (let ((next (+ val n)))
+    (if (> next 9) (- next 9) next)))
+
+(defun format-row (row v)
+  (mapcar (lambda (x) (inc-val x v)) row))
+
+(defun format-rows (rows v)
+  (mapcar (lambda (x) (format-row x v)) rows))
+
+(defun merge-fn (acc cur)
+  (cl-loop for idx in (number-sequence 0 (- (length cur) 1))
+           collect (append (nth idx acc) (nth idx cur))))
+
+(defun merge-rows (&rest rows)
+  (cl-reduce 'merge-fn rows))
+
+(defun format-nodes (n1)
+  (let* ((n2 (format-rows n1 1))
+         (n3 (format-rows n1 2))
+         (n4 (format-rows n1 3))
+         (n5 (format-rows n1 4))
+         (n6 (format-rows n1 5))
+         (n7 (format-rows n1 6))
+         (n8 (format-rows n1 7))
+         (n9 (format-rows n1 8))
+         (r1 (merge-rows n1 n2 n3 n4 n5))
+         (r2 (merge-rows n2 n3 n4 n5 n6))
+         (r3 (merge-rows n3 n4 n5 n6 n7))
+         (r4 (merge-rows n4 n5 n6 n7 n8))
+         (r5 (merge-rows n5 n6 n7 n8 n9)))
+    (append r1 r2 r3 r4 r5)))
 
 (defun line-to-list (line)
   (mapcar 'string-to-number (split-string line "" t)))
@@ -86,7 +119,16 @@
          (end (cons lenx leny))
          (graph (make-graph (mapcar 'line-to-list lines)))
          (distances (find-shortest-path graph start end)))
-    (print (length (hash-table-keys distances)))
+    (gethash end distances)))
+
+(defun test-find-shortest-path-v2 (file start)
+  (let* ((lines (read-lines file))
+         (nodes (format-nodes (mapcar 'line-to-list lines)))
+         (leny (- (length nodes) 1))
+         (lenx (- (length (nth 0 nodes)) 1))
+         (end (cons lenx leny))
+         (graph (make-graph nodes))
+         (distances (find-shortest-path graph start end)))
     (gethash end distances)))
 
 (defun profile-find-shortest-path (file)
@@ -100,5 +142,11 @@
 
 (ert-deftest 15-find-shortest-path-input-data ()
   (should (= (test-find-shortest-path "./15.input.txt" '(0 . 0)) 390)))
+
+(ert-deftest 15-find-shortest-path-v2-test-data ()
+  (should (= (test-find-shortest-path-v2 "./15.test.txt" '(0 . 0)) 315)))
+
+(ert-deftest 15-find-shortest-path-v2-input-data ()
+  (should (= (test-find-shortest-path-v2 "./15.input.txt" '(0 . 0)) 2814)))
 
 (ert "15")
