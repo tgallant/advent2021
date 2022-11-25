@@ -1,0 +1,40 @@
+name: Solutions
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+    inputs: null
+
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    outputs:
+      solutions: ${{ steps.collect.outputs.solutions }}
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Collect Solutions
+        id: collect
+        run: |
+          SOLUTIONS=$(python -c 'import os, json; print(json.dumps(sorted(os.listdir("./src"))))')
+          echo ::set-output name=solutions::${SOLUTIONS}
+  solution:
+    runs-on: ubuntu-latest
+    needs: collect
+    continue-on-error: true
+    strategy:
+      matrix:
+        solution: ${{ fromJSON(needs.collect.outputs.solutions) }}
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Run Solution
+        timeout-minutes: 2
+        uses: docker://silex/emacs:28-ci
+        with:
+          entrypoint: bash
+          args: -c "./test.sh ${{ matrix.solution }}"
