@@ -1,4 +1,7 @@
-; https://adventofcode.com/2021/day/3
+;; https://adventofcode.com/2021/day/3
+
+(require 'seq)
+(require 'subr-x)
 
 (defun make-state (pos counts)
   `((pos . ,pos)
@@ -54,7 +57,6 @@
   (compare-common-bits 'least-common rates))
 
 (defun power-consumption (binary-list)
-  (print binary-list)
   (defun rates ()
     (reduce 'calculate binary-list :initial-value '()))
   (let* ((r (plist-to-alist (rates)))
@@ -65,66 +67,52 @@
 (defun nth-of-string (str idx)
   (char-to-string (nth idx (string-to-list str))))
 
+(defun nth-bits (lst n)
+  (mapcar (lambda (s) (nth-of-string s n)) lst))
+
+(defun mc (lst)
+  (let ((count-0 (cl-count "0" lst :test 'equal))
+        (count-1 (cl-count "1" lst :test 'equal)))
+    (cond ((> count-0 count-1) "0")
+          ((<= count-0 count-1) "1"))))
+
+(defun lc (lst)
+  (let ((count-0 (cl-count "0" lst :test 'equal))
+        (count-1 (cl-count "1" lst :test 'equal)))
+    (cond ((> count-0 count-1) "1")
+          ((<= count-0 count-1) "0"))))
+
 (defun calculate-ogr (acc cur)
-  (print acc)
-  (print cur)
-  (let* ((p (car cur))
-         (c (cdr cur))
-         (v (most-common c)))
-    (print p)
-    (print c)
-    (print v)
-    (defun filter-binary-strings (a cu)
-      (let ((val (nth-of-string cu p)))
-        (if (string-equal val v)
-            (cons cu a)
-          a)))
-    (if (= 1 (length acc))
-        acc
-      (reduce 'filter-binary-strings acc :initial-value '()))))
+  (let ((result (mc (nth-bits acc cur))))
+    (defun starts-with-bit-p (s)
+      (equal result (nth-of-string s cur)))
+    (if (eq (length acc) 1) acc
+      (seq-filter 'starts-with-bit-p acc))))
 
 (defun calculate-csr (acc cur)
-  (let* ((p (car cur))
-         (c (cdr cur))
-         (v (least-common c)))
-    (defun filter-binary-strings (a cu)
-      (let ((val (nth-of-string cu p)))
-        (if (string-equal val v)
-            (cons cu a)
-          a)))
-    (if (= 1 (length acc))
-        acc
-      (reduce 'filter-binary-strings acc :initial-value '()))))
+  (let ((result (lc (nth-bits acc cur))))
+    (defun starts-with-bit-p (s)
+      (equal result (nth-of-string s cur)))
+    (if (eq (length acc) 1) acc
+      (seq-filter 'starts-with-bit-p acc))))
+
+(defun oxygen-generator-rating (binary-list)
+  (let* ((max-idx (- (length (car binary-list)) 1))
+         (range (number-sequence 0 max-idx)))
+    (string-to-number
+     (car (reduce 'calculate-ogr range :initial-value binary-list))
+     2)))
+
+(defun c02-scrubber-rating (binary-list)
+  (let* ((max-idx (- (length (car binary-list)) 1))
+         (range (number-sequence 0 max-idx)))
+    (string-to-number
+     (car (reduce 'calculate-csr range :initial-value binary-list))
+     2)))
 
 (defun life-support-rating (binary-list)
-  (print binary-list)
-  (defun oxygen-generator-rating (rates)
-    (print rates)
-    (string-to-number
-     (car (reduce 'calculate-ogr rates :initial-value binary-list))
-     2))
-  (defun c02-scrubber-rating (rates)
-    (string-to-number
-     (car (reduce 'calculate-csr rates :initial-value binary-list))
-     2))
-  (defun rates (lst)
-    (reduce 'calculate lst :initial-value '()))
-  (defun filter-binary-strings (a cu)
-    (let ((val (nth-of-string cu p)))
-      (if (string-equal val v)
-          (cons cu a)
-        a)))
-  (defun inner (idx lst)
-    (let* ((r (plist-to-alist (rates)))
-           (o (oxygen-generator-rating r))
-           (c (c02-scrubber-rating r)))))
-  (inner 0 binary-list)
-  (let* ((r (plist-to-alist (rates)))
-         (o (oxygen-generator-rating r))
-         (c (c02-scrubber-rating r)))
-    (print r)
-    (print o)
-    (print c)
+  (let ((o (oxygen-generator-rating binary-list))
+        (c (c02-scrubber-rating binary-list)))
     (* o c)))
 
 (defun read-lines (path)
@@ -143,5 +131,9 @@
 (ert-deftest 03-life-support-rating-test-data ()
   (let* ((lines (read-lines "./03.test.txt")))
     (should (= (life-support-rating lines) 230))))
+
+(ert-deftest 03-life-support-rating-input-data ()
+  (let* ((lines (read-lines "./03.input.txt")))
+    (should (= (life-support-rating lines) 5941884))))
 
 (ert "03")
