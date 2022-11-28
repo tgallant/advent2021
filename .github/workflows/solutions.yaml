@@ -13,7 +13,7 @@ jobs:
     outputs:
       solutions: ${{ steps.collect.outputs.solutions }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           fetch-depth: 0
       - name: Collect Solutions
@@ -29,7 +29,7 @@ jobs:
       matrix:
         solution: ${{ fromJSON(needs.collect.outputs.solutions) }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           fetch-depth: 0
       - name: Run Solution
