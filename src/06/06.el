@@ -4,14 +4,14 @@
 
 (defun simulate-day (acc cur)
   (print (format "day %s" cur))
-  (loop with next-val for fish in acc
+  (cl-loop with next-val for fish in acc
         do (setq next-val (- fish 1))
         if (= next-val -1) collect 6 and collect 8
         else collect next-val))
 
 (defun simulate-fish-growth (fish days)
-  (let ((days-list (loop for x from 1 to days collect x)))
-    (reduce 'simulate-day days-list :initial-value fish)))
+  (let ((days-list (cl-loop for x from 1 to days collect x)))
+    (cl-reduce 'simulate-day days-list :initial-value fish)))
 
 (defun line-to-fish (line)
   (let ((parts (split-string line ",")))

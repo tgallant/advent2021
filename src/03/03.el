@@ -20,7 +20,7 @@
   (defun results ()
     (let ((chars (string-to-list cur))
           (state (make-state 0 acc)))
-      (reduce
+      (cl-reduce
        'count-occurrences chars
        :key 'char-to-string
        :initial-value state)))
@@ -34,7 +34,7 @@
       (if (eq b nil)
           `(,cur . ,r)
         `(nil . ,(cons n r)))))
-  (cdr (reduce 'build-alist pl :initial-value '() :from-end t)))
+  (cdr (cl-reduce 'build-alist pl :initial-value '() :from-end t)))
 
 (defun most-common (counts)
   (let* ((c (cdr counts))
@@ -59,7 +59,7 @@
 
 (defun power-consumption (binary-list)
   (defun rates ()
-    (reduce 'calculate binary-list :initial-value '()))
+    (cl-reduce 'calculate binary-list :initial-value '()))
   (let* ((r (plist-to-alist (rates)))
          (g (mcb r))
          (e (lcb r)))
@@ -101,14 +101,14 @@
   (let* ((max-idx (- (length (car binary-list)) 1))
          (range (number-sequence 0 max-idx)))
     (string-to-number
-     (car (reduce 'calculate-ogr range :initial-value binary-list))
+     (car (cl-reduce 'calculate-ogr range :initial-value binary-list))
      2)))
 
 (defun c02-scrubber-rating (binary-list)
   (let* ((max-idx (- (length (car binary-list)) 1))
          (range (number-sequence 0 max-idx)))
     (string-to-number
-     (car (reduce 'calculate-csr range :initial-value binary-list))
+     (car (cl-reduce 'calculate-csr range :initial-value binary-list))
      2)))
 
 (defun life-support-rating (binary-list)

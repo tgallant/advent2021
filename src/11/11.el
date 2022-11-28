@@ -45,17 +45,17 @@
          (down-left (at-index (- x 1) (at-index (+ y 1) rows)))
          (down-right (at-index (+ x 1) (at-index (+ y 1) rows)))
          (neighbors (list val up down left right up-left up-right down-left down-right)))
-    (reduce 'next-point-value neighbors :initial-value val)))
+    (cl-reduce 'next-point-value neighbors :initial-value val)))
 
 (defun flash-loop (rows)
-  (loop with new-flashes = 0 for y from 0 to (- (length rows) 1)
-        collect (loop with cur with val with next for x from 0 to (- (length (nth 0 rows)) 1)
+  (cl-loop with new-flashes = 0 for y from 0 to (- (length rows) 1)
+        collect (cl-loop with cur with val with next for x from 0 to (- (length (nth 0 rows)) 1)
                       do (setq val (at-index x (at-index y rows)))
                       do (setq cur (check-point x y rows))
                       do (setq next (or (if (and (< val 10) (>= cur 10)) 10) cur))
                       collect next
                       if (= 10 next)
-                        do (incf new-flashes))
+                        do (cl-incf new-flashes))
         into next
         finally return (cons next new-flashes)))
 
@@ -68,8 +68,8 @@
       (process-flashes state))))
 
 (defun count-flashed (rows)
-  (loop for y from 0 to (- (length rows) 1)
-        sum (loop for x from 0 to (- (length (nth 0 rows)) 1)
+  (cl-loop for y from 0 to (- (length rows) 1)
+        sum (cl-loop for x from 0 to (- (length (nth 0 rows)) 1)
                       count (> (at-index x (at-index y rows)) 9))))
 
 (defun process-step (rows)
@@ -79,7 +79,7 @@
     (cons (reset-flashed flashed) count)))
 
 (defun count-flashes (steps rows)
-  (loop with state = rows with count = 0 with step-result for step from 1 to steps
+  (cl-loop with state = rows with count = 0 with step-result for step from 1 to steps
         do (setq step-result (process-step state))
         do (setq state (car step-result))
         do (setq count (+ count (cdr step-result)))
@@ -89,10 +89,10 @@
   (let* ((row-count (length rows))
          (col-count (length (nth 0 rows)))
          (total (* row-count col-count)))
-    (loop with state = rows with count = 0 with step-result for step from 1 to steps
+    (cl-loop with state = rows with count = 0 with step-result for step from 1 to steps
           do (setq step-result (process-step state))
           do (setq state (car step-result))
-          do (incf count)
+          do (cl-incf count)
           if (= (cdr step-result) total)
             return step)))
 

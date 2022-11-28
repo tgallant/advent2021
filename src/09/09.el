@@ -19,8 +19,8 @@
           val)))
 
 (defun find-low-points (levels)
-  (loop for y from 0 to (- (length levels) 1)
-        collect (loop for x from 0 to (- (length (nth 0 levels)) 1)
+  (cl-loop for y from 0 to (- (length levels) 1)
+        collect (cl-loop for x from 0 to (- (length (nth 0 levels)) 1)
                  collect (check-if-low-point x y levels))))
 
 (defun format-risk-level (val)
@@ -30,7 +30,7 @@
 
 (defun sum-risk-levels (levels)
   (let ((low-points (flatten-list (find-low-points levels))))
-    (reduce '+ (mapcar 'format-risk-level low-points))))
+    (cl-reduce '+ (mapcar 'format-risk-level low-points))))
 
 (defun is-valid-basin-member (val lowest)
   (if (not (eq val nil))
@@ -58,8 +58,8 @@
     acc))
 
 (defun find-basins (levels)
-  (loop with acc for y from 0 to (- (length levels) 1)
-        do (loop for x from 0 to (- (length (nth 0 levels)) 1)
+  (cl-loop with acc for y from 0 to (- (length levels) 1)
+        do (cl-loop for x from 0 to (- (length (nth 0 levels)) 1)
                  if (check-if-low-point x y levels)
                  do (push (measure-basin x y levels) acc))
         finally return acc))
@@ -68,8 +68,8 @@
   (let* ((basins (find-basins levels))
          (sizes (mapcar 'length basins))
          (sorted (sort sizes #'>))
-         (top-three (subseq sorted 0 3)))
-    (reduce '* top-three)))
+         (top-three (cl-subseq sorted 0 3)))
+    (cl-reduce '* top-three)))
 
 (defun line-to-levels (line)
   (mapcar 'string-to-number (split-string line "" t)))

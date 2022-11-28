@@ -15,7 +15,7 @@
            (cons x (+ y d))))))
 
 (defun navigate-submarine (instr)
-  (reduce 'execute-instr instr :initial-value '(0 . 0)))
+  (cl-reduce 'execute-instr instr :initial-value '(0 . 0)))
 
 (defun coords-product (instr)
   (let ((c (navigate-submarine instr)))
@@ -40,7 +40,7 @@
            (make-params x y (+ a d))))))
 
 (defun navigate-submarine-v2 (instr)
-  (reduce 'execute-instr-v2 instr :initial-value (make-params 0 0 0)))
+  (cl-reduce 'execute-instr-v2 instr :initial-value (make-params 0 0 0)))
 
 (defun coords-product-v2 (instr)
   (let* ((c (navigate-submarine-v2 instr))

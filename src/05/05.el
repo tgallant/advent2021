@@ -16,30 +16,30 @@
 (defun make-horizontal-points (start end y)
   (let ((s (min start end))
         (e (max start end)))
-    (loop for x from s to e
+    (cl-loop for x from s to e
           collect `(,x . ,y))))
 
 (defun make-vertical-points (start end x)
   (let ((s (min start end))
         (e (max start end)))
-    (loop for y from s to e
+    (cl-loop for y from s to e
           collect `(,x . ,y))))
 
 (defun make-diagonal-points (startx starty endx endy)
   (cond ((and (< startx endx) (< starty endy))
-         (loop for x from startx to endx
+         (cl-loop for x from startx to endx
                for y from starty to endy
                collect `(,x . ,y)))
         ((and (< startx endx) (> starty endy))
-         (loop for x from startx to endx
+         (cl-loop for x from startx to endx
                for y from starty downto endy
                collect `(,x . ,y)))
         ((and (> startx endx) (< starty endy))
-         (loop for x from startx downto endx
+         (cl-loop for x from startx downto endx
                for y from starty to endy
                collect `(,x . ,y)))
         ((and (> startx endx) (> starty endy))
-         (loop for x from startx downto endx
+         (cl-loop for x from startx downto endx
                for y from starty downto endy
                collect `(,x . ,y)))))
 
@@ -58,7 +58,7 @@
 (defun make-points-table (coords diagonal)
   (defun log-all-points (acc cur)
     (let ((points (get-all-points cur diagonal)))
-      (loop for point in points
+      (cl-loop for point in points
             with a = acc
             with point-str
             with count
@@ -66,7 +66,7 @@
             do (setq count (gethash point-str a 0))
             do (puthash point-str (+ 1 count) a)
             finally return a)))
-  (reduce 'log-all-points coords
+  (cl-reduce 'log-all-points coords
           :initial-value (make-hash-table :test 'equal)))
 
 (defun detect-overlapping-vents (coords &rest props)

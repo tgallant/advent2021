@@ -37,7 +37,7 @@
   (alist-get tag autocomplete-score 0 nil 'string-equal))
 
 (defun detect-syntax-error (line)
-  (loop with close-stack for char in line
+  (cl-loop with close-stack for char in line
         if (is-opening-character char)
           do (push (get-closing-tag char) close-stack)
         if (is-closinig-character char)
@@ -49,10 +49,10 @@
 (defun calculate-syntax-error-score (lines)
   (let* ((errors (mapcar 'detect-syntax-error lines))
          (scores (mapcar 'get-tag-score errors)))
-    (reduce '+ scores)))
+    (cl-reduce '+ scores)))
 
 (defun tag-autocomplete (line)
-  (loop with close-stack for char in line
+  (cl-loop with close-stack for char in line
         if (is-opening-character char)
           do (push (get-closing-tag char) close-stack)
         if (is-closinig-character char)
@@ -65,13 +65,13 @@
 (defun score-autocompletion (tags)
   (defun score (acc cur)
     (+ (* acc 5) (get-autocomplete-score cur)))
-  (reduce 'score tags :initial-value 0))
+  (cl-reduce 'score tags :initial-value 0))
 
 (defun remove-nils (lst)
   (defun inner (cur acc)
     (if (eq cur nil) acc
       (cons cur acc)))
-  (reduce 'inner lst :initial-value '() :from-end t))
+  (cl-reduce 'inner lst :initial-value '() :from-end t))
 
 (defun calculate-autocomplete-score (lines)
   (let* ((autocompletions (mapcar 'tag-autocomplete lines))

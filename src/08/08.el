@@ -6,15 +6,15 @@
   '(2 4 3 7))
 
 (defun count-unique-segments (acc cur)
-  (if (find (length cur) (unique-segment-lengths))
+  (if (cl-find (length cur) (unique-segment-lengths))
       (+ acc 1)
     acc))
 
 (defun count-unique-output (acc cur)
-  (+ acc (reduce 'count-unique-segments (cdr cur) :initial-value 0)))
+  (+ acc (cl-reduce 'count-unique-segments (cdr cur) :initial-value 0)))
 
 (defun count-digits-with-unique-segments (displays)
-  (reduce 'count-unique-output displays :initial-value 0))
+  (cl-reduce 'count-unique-output displays :initial-value 0))
 
 (defun not-contained-in (x y)
   (let ((y-list (string-to-list y)))
@@ -22,10 +22,10 @@
       (if (seq-contains-p y-list cur)
           acc
         (cons cur acc)))
-    (reduce 'not-contains (string-to-list x) :initial-value nil)))
+    (cl-reduce 'not-contains (string-to-list x) :initial-value nil)))
 
 (defun make-signal-hash (signal)
-  (reduce '+ (string-to-list signal)))
+  (cl-reduce '+ (string-to-list signal)))
 
 (defun identify-0 (five signals)
   (if (and
@@ -133,7 +133,7 @@
     (string-to-number (string-join (mapcar 'get-digit-from-mapping output)))))
 
 (defun sum-display-output (displays)
-  (reduce '+ (mapcar 'generate-digit-output displays)))
+  (cl-reduce '+ (mapcar 'generate-digit-output displays)))
 
 (defun line-to-display (line)
   (let* ((parts (split-string line "|" t))

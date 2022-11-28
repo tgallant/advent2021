@@ -16,11 +16,11 @@
   (mapcar 'make-row numbers))
 
 (defun sum-unchecked-row (row)
-  (loop for square in row
+  (cl-loop for square in row
         if (not (cdr square)) sum (car square)))
 
 (defun sum-unchecked (card)
-  (loop for row in card sum (sum-unchecked-row row)))
+  (cl-loop for row in card sum (sum-unchecked-row row)))
 
 (defun calculate-score (pick card)
   (if card
@@ -38,7 +38,7 @@
   (mapcar 'apply-to-card cards))
 
 (defun check-row (row)
-  (loop for square in row
+  (cl-loop for square in row
         with checked = t
         do (setq checked (and checked (cdr square)))
         finally return checked))
@@ -49,11 +49,11 @@
   (mapcar 'get-nth card))
 
 (defun check-card-rows (card)
-  (loop for row in card
+  (cl-loop for row in card
         if (check-row row) return t))
 
 (defun check-card-cols (card)
-  (loop for x from 0 to 4
+  (cl-loop for x from 0 to 4
         with col
         do (setq col (card-col card x))
         if (check-row col) return t))
@@ -63,7 +63,7 @@
     (if (check-card-cols card) card)))
 
 (defun find-winning-card (cards)
-  (loop for card in cards
+  (cl-loop for card in cards
         if (is-winning-card card) return card))
 
 (defun filter-winning-cards (cards)
@@ -71,10 +71,10 @@
     (if (is-winning-card cur)
         acc
       (cons cur acc)))
-  (reduce 'filter-winning-card cards :initial-value '()))
+  (cl-reduce 'filter-winning-card cards :initial-value '()))
 
 (defun play-bingo (picks cards)
-  (loop for pick in picks
+  (cl-loop for pick in picks
         with c = cards
         with winning-card
         do (setq c (apply-pick pick c))
@@ -82,7 +82,7 @@
         if winning-card return (calculate-score pick winning-card)))
 
 (defun play-bingo-v2 (picks cards)
-  (loop for pick in picks
+  (cl-loop for pick in picks
         with c = cards
         with winning-score
         do (setq c (apply-pick pick c))
@@ -100,7 +100,7 @@
            `(,cards . ,(cons cur buffr))))))
 
 (defun lines-to-cards (lines)
-  (car (reduce 'build-cards lines :initial-value '())))
+  (car (cl-reduce 'build-cards lines :initial-value '())))
 
 (defun line-to-picks (line)
   (let ((parts (split-string line "," t)))

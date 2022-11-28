@@ -14,7 +14,7 @@
 
 (defun count-increases (num-list)
   (defun count-increases-inner ()
-    (reduce 'compare-depths num-list :initial-value '(nil . 0)))
+    (cl-reduce 'compare-depths num-list :initial-value '(nil . 0)))
   (cdr (count-increases-inner)))
 
 (defun count-increases-window (num-list window)
@@ -28,7 +28,7 @@
             ((< (length n) window)
              `((win . ,w) (buf . ,n))))))
   (defun window ()
-    (reduce 'build-window num-list :initial-value '((win . nil) (buf . nil))))
+    (cl-reduce 'build-window num-list :initial-value '((win . nil) (buf . nil))))
   (count-increases (reverse (alist-get 'win (window)))))
 
 (defun read-lines (path)

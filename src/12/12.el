@@ -52,7 +52,7 @@
                 ((cdr node)
                  (if (not (member node path))
                      (mapc (lambda (n) (inner n (cons (cons node path) twice))) (gethash node graph))
-                   (if (and (= 1 (count node path :test 'equal))
+                   (if (and (= 1 (cl-count node path :test 'equal))
                             (not twice)
                             (not (equal node start-node))
                             (not (equal node end-node)))

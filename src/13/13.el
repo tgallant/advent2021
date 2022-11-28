@@ -54,7 +54,7 @@
 (defun display-points (points)
   (let ((max-x (apply 'max (mapcar 'first points)))
         (min-x (apply 'min (mapcar 'first points)))
-        (max-y (apply 'max (mapcar 'second points))))
+        (max-y (apply 'max (mapcar 'cl-second points))))
     (defun display-row (row)
       (print (cl-loop for x from min-x to max-x
                if (member (list x row) points)

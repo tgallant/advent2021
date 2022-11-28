@@ -27,7 +27,7 @@
 (defun count-pairs (lst)
   (defun count-item (acc cur)
     (let ((val (gethash cur acc)))
-      (if (second cur)
+      (if (cl-second cur)
           (if val
               (puthash cur (+ val 1) acc)
             (puthash cur 1 acc)))
@@ -54,8 +54,8 @@
              (next (gethash (apply 'concat k) instructions)))
         (incby next v elhash)
         (incby k (* -1 v) pairhash)
-        (incby (list (first k) next) v pairhash)
-        (incby (list next (second k)) v pairhash)))
+        (incby (list (cl-first k) next) v pairhash)
+        (incby (list next (cl-second k)) v pairhash)))
     (cl-loop repeat steps do (mapc 'do-step (kvpairs pairhash)))
     elhash))
 
