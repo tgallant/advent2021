@@ -20,7 +20,7 @@ jobs:
         id: collect
         run: |
           SOLUTIONS=$(python -c 'import os, json; print(json.dumps(sorted(os.listdir("./src"))))')
-          echo ::set-output name=solutions::${SOLUTIONS}
+          echo solutions=${SOLUTIONS} >> $GITHUB_OUTPUT
   solution:
     runs-on: ubuntu-latest
     needs: collect
