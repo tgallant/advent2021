@@ -1,6 +1,7 @@
 ;; https://adventofcode.com/2021/day/14
 
 (require 'ert)
+(require 'subr-x)
 
 (defun make-pairs (lst)
   (defun pair (idx)

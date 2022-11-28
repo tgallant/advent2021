@@ -1,6 +1,7 @@
 ; https://adventofcode.com/2021/day/5
 
 (require 'ert)
+(require 'subr-x)
 
 (defun string-to-coord (coord-str)
   (let* ((parts (split-string coord-str ","))
