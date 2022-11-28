@@ -1,5 +1,7 @@
 ; https://adventofcode.com/2021/day/8
 
+(require 'ert)
+
 (defun unique-segment-lengths ()
   '(2 4 3 7))
 

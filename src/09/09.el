@@ -1,5 +1,7 @@
 ;; https://adventofcode.com/2021/day/9
 
+(require 'ert)
+
 (defun at-index (idx lst)
   (if (>= idx 0)
       (nth idx lst)))

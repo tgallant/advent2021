@@ -1,5 +1,7 @@
 ;; https://adventofcode.com/2021/day/15
 
+(require 'ert)
+
 (load (concat default-directory "heap.el"))
 
 (defun get-val (x y points)

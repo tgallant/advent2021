@@ -1,5 +1,7 @@
 ; https://adventofcode.com/2021/day/6
 
+(require 'ert)
+
 (defun simulate-day (acc cur)
   (print (format "day %s" cur))
   (loop with next-val for fish in acc

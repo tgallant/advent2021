@@ -1,5 +1,7 @@
 ; https://adventofcode.com/2021/day/4
 
+(require 'ert)
+
 (defun make-square (value checked?)
   `(,value . ,checked?))
 

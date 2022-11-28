@@ -1,5 +1,7 @@
 ;; https://adventofcode.com/2021/day/14
 
+(require 'ert)
+
 (defun make-pairs (lst)
   (defun pair (idx)
     (list (nth idx lst) (nth (+ 1 idx) lst)))

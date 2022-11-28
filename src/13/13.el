@@ -1,5 +1,7 @@
 ;; https://adventofcode.com/2021/day/13
 
+(require 'ert)
+
 (defun transform-value (val fold-value)
   (let* ((max-val (max val fold-value))
          (min-val (min val fold-value))

@@ -1,5 +1,6 @@
 ;; https://adventofcode.com/2021/day/3
 
+(require 'ert)
 (require 'seq)
 (require 'subr-x)
 

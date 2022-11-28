@@ -1,5 +1,7 @@
 ;; https://adventofcode.com/2021/day/2
 
+(require 'ert)
+
 (defun execute-instr (acc cur)
   (let ((x (car acc))
         (y (cdr acc))

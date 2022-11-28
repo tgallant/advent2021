@@ -1,5 +1,7 @@
 ; https://adventofcode.com/2021/day/7
 
+(require 'ert)
+
 (defun difference (x y)
   (let ((minv (min x y))
         (maxv (max x y)))

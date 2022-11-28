@@ -1,5 +1,7 @@
 ;; https://adventofcode.com/2021/day/12
 
+(require 'ert)
+
 (defconst start-node '(start . t))
 
 (defconst end-node '(end . t))

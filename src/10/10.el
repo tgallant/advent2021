@@ -1,5 +1,7 @@
 ;; https://adventofcode.com/2021/day/10
 
+(require 'ert)
+
 (defconst opening-characters '("(" "[" "{" "<"))
 
 (defconst closing-characters '(")" "]" "}" ">"))

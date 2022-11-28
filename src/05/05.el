@@ -1,5 +1,7 @@
 ; https://adventofcode.com/2021/day/5
 
+(require 'ert)
+
 (defun string-to-coord (coord-str)
   (let* ((parts (split-string coord-str ","))
          (start (string-to-number (nth 0 parts)))

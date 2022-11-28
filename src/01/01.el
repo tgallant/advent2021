@@ -1,5 +1,7 @@
 ;; https://adventofcode.com/2021/day/1
 
+(require 'ert)
+
 (defun compare-depths (acc cur)
   (let ((prv (car acc))
         (cnt (cdr acc)))
